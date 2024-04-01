@@ -1,0 +1,32 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: web-hpa # Nombre del HPA
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: web # Nombre del Deployment que deseas escalar
+  minReplicas: 3 # Establecer el número mínimo de réplicas
+  maxReplicas: 20 # Establecer el número máximo de réplicas
+  metrics:
+  - type: Resource # Tipo de métrica basada en recursos (CPU)
+    resource:
+      name: cpu # Nombre del recurso (CPU)
+      target:
+        type: Utilization # Tipo de objetivo de la métrica (Utilización)
+        averageUtilization: 120 # Utilización de CPU objetivo (%)
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 100 # Ventana de estabilización (en segundos)
+      policies:
+      - type: Percent # Tipo de política de escalado (porcentaje)
+        value: 20 # Valor de la política de escalado (50%)
+        periodSeconds: 15 # Período de la política de escalado (en segundos)
+
+    scaleDown:
+      stabilizationWindowSeconds: 100 # Ventana de estabilización (en segundos)
+      policies:
+      - type: Percent # Tipo de política de escalado (porcentaje)
+        value: 40 # Valor de la política de escalado (50%)
+        periodSeconds: 20 # Período de la política de escalado (en segundos)

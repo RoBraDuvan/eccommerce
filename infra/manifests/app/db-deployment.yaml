@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.31.2 (HEAD)
+  labels:
+    io.kompose.service: db
+  name: db
+spec:
+  selector:
+    matchLabels:
+      app: db
+      io.kompose.service: db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.31.2 (HEAD)
+      labels:
+        io.kompose.network/learning-app-ecommerce-kodekloud-net: "true"
+        io.kompose.service: db
+        app: db
+    spec:
+      serviceAccountName: db
+      containers:
+        - env:
+            - name: MYSQL_DATABASE
+              value: ecomdb
+            - name: MYSQL_PASSWORD
+              value: ecompassword
+            - name: MYSQL_ROOT_PASSWORD
+              value: rootpassword
+            - name: MYSQL_USER
+              value: ecomuser
+          image: d4rkghost47/kodekloud-eccomerce-db:3.0.0
+          name: db
+          ports:
+            - containerPort: 3306
+              hostPort: 3306
+              protocol: TCP
+          resources:
+            limits:
+              memory: "512Mi"  
+              cpu: "500m"      
+            requests:
+              memory: "256Mi"  
+              cpu: "250m"      

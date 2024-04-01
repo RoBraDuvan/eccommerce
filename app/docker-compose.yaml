@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  web:
+    container_name: web
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+    - "8080:80"
+
+    networks:
+    - kodekloud-net
+
+  db:
+    container_name: db
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    ports:
+      - "3306:3306"
+
+    networks:
+      - kodekloud-net
+
+    volumes:
+      - ./db-load-script.sql:/docker-entrypoint-initdb.d/db-load-script.sql
+
+networks:
+  kodekloud-net:
+    driver: bridge
